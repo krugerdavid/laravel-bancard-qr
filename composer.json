@@ -1,0 +1,39 @@
+{
+    "name": "krugerdavid/laravel-bancard-qr",
+    "description": "Laravel wrapper package for the Bancard QR API",
+    "license": "MIT",
+    "keywords": [
+        "krugerdavid",
+        "laravel",
+        "bancard",
+        "qr",
+        "payments",
+        "paraguay"
+    ],
+    "authors": [
+        {
+            "name": "David Kruger",
+            "email": "me@krugerdavid.com",
+            "homepage": "https://krugerdavid.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "guzzlehttp/guzzle": "^7.5"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "KrugerDavid\\LaravelBancardQR\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "KrugerDavid\\LaravelBancardQR\\BancardQRServiceProvider"
+            ]
+        }
+    }
+}
