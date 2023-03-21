@@ -1,4 +1,10 @@
 # Bancard QR for Laravel
+[![Latest Stable Version](http://poser.pugx.org/krugerdavid/laravel-bancard-qr/v)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
+[![Daily Downloads](http://poser.pugx.org/krugerdavid/laravel-bancard-qr/d/daily)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
+[![Monthly Downloads](http://poser.pugx.org/krugerdavid/laravel-bancard-qr/d/monthly)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
+[![Total Downloads](http://poser.pugx.org/krugerdavid/laravel-bancard-qr/downloads)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
+[![License](http://poser.pugx.org/krugerdavid/laravel-bancard-qr/license)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
+[![PHP Version Require](http://poser.pugx.org/krugerdavid/laravel-bancard-qr/require/php)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
 
 Laravel wrapper package for Bancard QR API.
 
