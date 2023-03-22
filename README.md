@@ -6,7 +6,7 @@
 [![License](http://poser.pugx.org/krugerdavid/laravel-bancard-qr/license)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
 [![PHP Version Require](http://poser.pugx.org/krugerdavid/laravel-bancard-qr/require/php)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
 
-Laravel wrapper package for Bancard QR API.
+Laravel wrapper package for Bancard QR API. More information about Bancard QR [here](https://www.bancard.com.py/pagos-qr)
 
 ## Requirements
 
