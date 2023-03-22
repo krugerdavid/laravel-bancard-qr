@@ -5,9 +5,7 @@ namespace KrugerDavid\LaravelBancardQR;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Utils;
-use Illuminate\Support\Facades\Log;
 
 class BancardQR
 {
