@@ -6,23 +6,28 @@
 [![License](http://poser.pugx.org/krugerdavid/laravel-bancard-qr/license)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
 [![PHP Version Require](http://poser.pugx.org/krugerdavid/laravel-bancard-qr/require/php)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
 
-Laravel wrapper package for Bancard QR API.
+Laravel wrapper package for Bancard QR API. More information about Bancard QR [here](https://www.bancard.com.py/pagos-qr)
+
+## Requirements
+
+* PHP 8 or later
+* Laravel 9, 10 or later
 
 ## Instalation
 
-Install the package by the following command
+Fire up Composer and require this package in your project.
 
     composer require krugerdavid/laravel-bancard-qr
+
+That's it.
 
 ## Publish the config
 
 Run the following command to publish config file,
 
-    php artisan vendor:publish
-
-And select the proper provider
-
-    KrugerDavid\LaravelBancardQR\BancardQRServiceProvider
+```shell
+php artisan vendor:publish --provider="KrugerDavid\LaravelBancardQR\BancardQRServiceProvider"
+```
 
 ## Add ENV keys
 
@@ -36,16 +41,26 @@ Add the following keys on your .env file
 
 ## How to use
 
-Import the library
+Generate a QR
 
-    use KrugerDavid\LaravelBancardQR\BancardQR;
+```php
+use KrugerDavid\LaravelBancardQR\BancardQR;
 
-For generating a QR call
 
-    $response = BancardQR::generate_qr(int $amount, string $description, ?array $promotions);
-    $qr_express = $response->qr_express;
+$response = BancardQR::generate_qr(int $amount, string $description, ?array $promotions);
+$qr_express = $response->qr_express;
 
-The response will contain the qr_express object and the supported clients as well.
+```
+
+Revert a QR code after a payment was made
+
+```php
+use KrugerDavid\LaravelBancardQR\BancardQR;
+
+// $hook_alias is the QR alias
+BancardQR::revert($hook_alias);
+
+```
 
 ### License
 The MIT License (MIT). Please see [License](LICENSE.md) File for more information  
