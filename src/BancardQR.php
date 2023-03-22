@@ -2,9 +2,11 @@
 
 namespace KrugerDavid\LaravelBancardQR;
 
+use Exception;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Utils;
 use Illuminate\Support\Facades\Log;
 
 class BancardQR
@@ -12,50 +14,53 @@ class BancardQR
     /**
      * 
      */
-    public static function generate_qr(int $amount, ?string $description = null, ?array $promotions = null)
+    public static function generate_qr(int $amount, string $description, ?array $promotions = null)
     {
-        $headers = [
-            'Authorization' => self::generateToken(),
-            'Content-Type' => 'application/json'
-        ];
+        if (is_null($amount) || empty($amount))
+            throw new Exception("amount value is empty");
+
+        if (is_null($description) || empty($description) || !isset($description))
+            throw new Exception("desription is empty");
 
         try 
         {
             $url = 'commerces/%s/branches/%s/selling/generate-qr-express';
             $url = sprintf($url, config("bancard-qr.commerce.code"), config("bancard-qr.commerce.branch"));
 
+            $headers = [
+                'Authorization' => self::generateToken(),
+                'Content-Type' => 'application/json'
+            ];
+
             $client = new Client([
                 'base_uri' => config('bancard-qr.service_url')
             ]);
 
             $json = [
-                'amount' => $amount
+                'amount' => $amount,
+                'description' => $description
             ];
 
-            if($description)
-                $json['description'] = $description;
+            if($promotions && is_array($promotions))
+                $json['promotions'] = $promotions;            
 
-            if($promotions)
-                $json['promotions'] = $promotions;
-
-            
-
-            $res = $client->request('POST',$url, [
+            $response = $client->request('POST',$url, [
                 'headers' => $headers,
                 'body' => json_encode($json)
             ]);
 
-            return response()->json(self::responseFromBancard($res));
+            return self::responseJson($response);
 
-        } catch (GuzzleException $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+        } catch (RequestException $e) {
+            throw new Exception($e->getMessage());
         }
     }
 
     public static function revert(string $hook_alias)
     {
+        if(is_null($hook_alias) || empty($hook_alias))
+            throw new Exception("Hook alias is empty");
+            
         try 
         {
             $url = 'commerces/%s/branches/%s/selling/payments/revert/%s';
@@ -74,12 +79,10 @@ class BancardQR
                 'headers' => $headers
             ]);
 
-            return response()->json(self::responseFromBancard($res));
+            return self::responseJson($res);
 
-        } catch (GuzzleException $e) {
-            return response()->json([
-                'error' => $e->getMessage()
-            ], 500);
+        } catch (RequestException $e) {
+            throw new Exception($e->getMessage());
         }
     }
 
@@ -89,9 +92,10 @@ class BancardQR
         return "Basic {$token}";
     }
 
-    private static function responseFromBancard(Response $response)
+    private static function responseJson($response)
     {
-        $res = @json_decode((string)$response->getBody()->getContents());
-        return $res;
+        return Utils::jsonDecode(
+            $response->getBody()->getContents()
+        );
     }
 }

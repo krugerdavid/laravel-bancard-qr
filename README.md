@@ -42,8 +42,8 @@ Import the library
 
 For generating a QR call
 
-    $response = BancardQR::generate_qr(int $amount, string $description, ?array $promotions');
-    $response = $response->getData();
+    $response = BancardQR::generate_qr(int $amount, string $description, ?array $promotions);
+    $qr_express = $response->qr_express;
 
 The response will contain the qr_express object and the supported clients as well.
 
