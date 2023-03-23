@@ -82,6 +82,14 @@ use KrugerDavid\LaravelBancardQR\BancardQR;
 // $hook_alias is the QR alias
 BancardQR::revert($hook_alias);
 ```
+The response object will have the following structure
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `status` | String | Indicates if the qr could be reversed or not. |
+| `reverse` | QR object | Element with info of the QR reverted |
+| `messages` | Array | In case of `status` error, list of errors |
+
 ## Credits
 
 - [David Krüger](https://github.com/krugerdavid)
