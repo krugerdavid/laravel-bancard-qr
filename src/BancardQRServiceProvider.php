@@ -9,7 +9,7 @@ class BancardQRServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../config/bancard-qr.php' => config_path('bancard-qr.php')
+            __DIR__ . '/../config/bancardqr.php' => config_path('bancardqr.php')
         ]);
     }
 
