@@ -9,21 +9,28 @@ use GuzzleHttp\Utils;
 
 class BancardQR
 {
+    public static string $production = 'https://comercios.bancard.com.py/external-commerce/api/0.1/';
+    public static string $staging = 'https://vpos.infonet.com.py:8888';
+
+    public static function isStaging() : bool
+    {
+        return config('bancardqr.staging');
+    }
+
+    public static function baseUrl() : string 
+    {
+        return self::isStaging() ? self::$staging : self::$production;
+    }
+
     /**
      * 
      */
     public static function generate_qr(int $amount, string $description, ?array $promotions = null)
     {
-        if (is_null($amount) || empty($amount))
-            throw new Exception("amount value is empty");
-
-        if (is_null($description) || empty($description) || !isset($description))
-            throw new Exception("desription is empty");
-
         try 
         {
             $url = 'commerces/%s/branches/%s/selling/generate-qr-express';
-            $url = sprintf($url, config("bancard-qr.commerce.code"), config("bancard-qr.commerce.branch"));
+            $url = sprintf($url, config('bancardqr.commerce_code'), config('bancardqr.commerce_branch'));
 
             $headers = [
                 'Authorization' => self::generateToken(),
@@ -31,7 +38,7 @@ class BancardQR
             ];
 
             $client = new Client([
-                'base_uri' => config('bancard-qr.service_url')
+                'base_uri' => self::baseUrl()
             ]);
 
             $json = [
@@ -48,9 +55,8 @@ class BancardQR
             ]);
 
             return self::responseJson($response);
-
         } catch (RequestException $e) {
-            throw new Exception($e->getMessage());
+            return self::formatException($e);
         }
     }
 
@@ -62,15 +68,19 @@ class BancardQR
         try 
         {
             $url = 'commerces/%s/branches/%s/selling/payments/revert/%s';
-            $url = sprintf($url, config("bancard-qr.commerce.code"), config("bancard-qr.commerce.branch"), $hook_alias);
+            $url = sprintf($url, config('bancardqr.commerce.code'), config('bancardqr.commerce.branch'), $hook_alias);
 
             $headers = [
                 'Authorization' => self::generateToken(),
-                'Content-Type' => 'application/json'
+                'Content-Type' => 'application/json',
+                'referer' => true,
+                'User-Agent' => $_SERVER['HTTP_USER_AGENT'],
+                'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                'Accept-Encoding' => 'gzip, deflate, br',
             ];
 
             $client = new Client([
-                'base_uri' => config('bancard-qr.service_url')
+                'base_uri' => self::baseUrl()
             ]);
 
             $res = $client->request('PUT', $url, [
@@ -80,13 +90,13 @@ class BancardQR
             return self::responseJson($res);
 
         } catch (RequestException $e) {
-            throw new Exception($e->getMessage());
+            return self::formatException($e);
         }
     }
 
     private static function generateToken()
     {
-        $token = base64_encode(sprintf('apps/%s:%s', config('bancard-qr.public_key'), config('bancard-qr.private_key')));
+        $token = base64_encode(sprintf('apps/%s:%s', config('bancardqr.public_key'), config('bancardqr.private_key')));
         return "Basic {$token}";
     }
 
@@ -94,6 +104,13 @@ class BancardQR
     {
         return Utils::jsonDecode(
             $response->getBody()->getContents()
+        );
+    }
+
+    private static function formatException($e)
+    {
+        return Utils::jsonDecode(
+            $e->getResponse()->getBody()->getContents()
         );
     }
 }

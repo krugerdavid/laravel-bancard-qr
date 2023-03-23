@@ -16,51 +16,76 @@ Laravel wrapper package for Bancard QR API. More information about Bancard QR [h
 ## Instalation
 
 Fire up Composer and require this package in your project.
-
-    composer require krugerdavid/laravel-bancard-qr
-
+```bash
+composer require krugerdavid/laravel-bancard-qr
+```
 That's it.
 
 ## Publish the config
 
 Run the following command to publish config file,
 
-```shell
+```bash
 php artisan vendor:publish --provider="KrugerDavid\LaravelBancardQR\BancardQRServiceProvider"
 ```
 
 ## Add ENV keys
 
 Add the following keys on your .env file
-
-    BANCARDQR_PUBLIC_KEY=
-    BANCARDQR_PRIVATE_KEY=
-    BANCARDQR_SERVICE_URL=
-    BANCARDQR_COMMERCE_CODE=
-    BANCARDQR_COMMERCE_BRANCH=
-
+```
+BANCARDQR_PUBLIC_KEY=
+BANCARDQR_PRIVATE_KEY=
+BANCARDQR_STAGING=
+BANCARDQR_COMMERCE_CODE=
+BANCARDQR_COMMERCE_BRANCH=
+```
 ## How to use
-
-Generate a QR
-
+### Generate a QR
+Generate a QR code for a payment.
 ```php
 use KrugerDavid\LaravelBancardQR\BancardQR;
 
-
 $response = BancardQR::generate_qr(int $amount, string $description, ?array $promotions);
-$qr_express = $response->qr_express;
-
 ```
 
-Revert a QR code after a payment was made
+The response object will have the following structure
 
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `status` | String | Indicates if the qr could be generated or not. |
+| `qr_express` | QR object | Element with qr express data. |
+| `supported_clients` | Array | List of clients that support payment with QR. |
+
+*QR Object*
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `amount` | Number | Amount in guaraníes. |
+| `hook_alias` | String | Alias of the payment (from the QR) |
+| `description` | String | Description of the sale entered by the merchant (Optional, the merchant may not enter a description) |
+| `url` | String | URL where the generated QR image is located (in PNG format). This is the image that the store must display in its system. |
+| `created_at` | String | Date time of creation of the QR in format dd/mm/yyyy HH:mm:ss |
+| `qr_data` | String | QR data in EMVCo format. |
+
+*Supported Clients List*
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `name` | String | Client name. |
+| `logo_url` | String | Client logo url |
+
+### Revert QR Payment
+Revert a QR code after a payment was made
 ```php
 use KrugerDavid\LaravelBancardQR\BancardQR;
 
 // $hook_alias is the QR alias
 BancardQR::revert($hook_alias);
-
 ```
+## Credits
 
-### License
+- [David Krüger](https://github.com/krugerdavid)
+
+## License
+
 The MIT License (MIT). Please see [License](LICENSE.md) File for more information  
