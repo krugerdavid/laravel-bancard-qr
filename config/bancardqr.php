@@ -26,5 +26,14 @@ return [
 
     // Commerce Branch Identifier provided by Bancard
     'commerce_branch' => env('BANCARDQR_COMMERCE_BRANCH', null),
-    
+
+    /*
+    |--------------------------------------------------------------------------
+    | HTTP Timeout
+    |--------------------------------------------------------------------------
+    |
+    | Timeout in seconds for API requests.
+    |
+    */
+    'timeout' => env('BANCARDQR_TIMEOUT', 30),
 ];

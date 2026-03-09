@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+>
+    <testsuites>
+        <testsuite name="Unit">
+            <directory suffix="Test.php">./tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory suffix="Test.php">./tests/Feature</directory>
+        </testsuite>
+    </testsuites>
+    <php>
+        <env name="BANCARDQR_PRIVATE_KEY" value="test_private_key"/>
+        <env name="BANCARDQR_PUBLIC_KEY" value="test_public_key"/>
+        <env name="BANCARDQR_COMMERCE_CODE" value="TEST_COMMERCE"/>
+        <env name="BANCARDQR_COMMERCE_BRANCH" value="TEST_BRANCH"/>
+        <env name="BANCARDQR_STAGING" value="true"/>
+    </php>
+</phpunit>

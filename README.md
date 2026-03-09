@@ -8,12 +8,22 @@
 
 Laravel wrapper package for Bancard QR API. More information about Bancard QR [here](https://www.bancard.com.py/pagos-qr)
 
+## What's new in v2.0
+
+- **Manager + Facade**: Inyectable `BancardQRManager` y Facade para mejor testabilidad
+- **Dependency injection**: Soporte nativo para inyección de dependencias
+- **Config mejorada**: `mergeConfigFrom` — la config funciona sin publicar; timeout configurable
+- **Manejo de errores**: Excepciones en lugar de retornar JSON; logging con `Log::error`
+- **Tests**: Suite completa con Pest (Unit + Feature)
+- **CI**: GitHub Actions para PHP 8.2–8.4 y Laravel 11–12
+- **Bugs corregidos**: `revert()` usaba keys de config incorrectos; `formatException` fallaba sin response
+
 ## Requirements
 
-* PHP 8 or later
-* Laravel 9, 10 or later
+* PHP 8.1 or later
+* Laravel 10, 11 or later
 
-## Instalation
+## Installation
 
 Fire up Composer and require this package in your project.
 ```bash
@@ -26,7 +36,7 @@ That's it.
 Run the following command to publish config file,
 
 ```bash
-php artisan vendor:publish --provider="KrugerDavid\LaravelBancardQR\BancardQRServiceProvider"
+php artisan vendor:publish --tag=bancardqr-config
 ```
 
 ## Add ENV keys
@@ -38,17 +48,54 @@ BANCARDQR_PRIVATE_KEY=
 BANCARDQR_STAGING=
 BANCARDQR_COMMERCE_CODE=
 BANCARDQR_COMMERCE_BRANCH=
+BANCARDQR_TIMEOUT=30
 ```
+
 ## How to use
-### Generate a QR
-Generate a QR code for a payment.
+
+### Using the Facade (recommended)
+
+```php
+use KrugerDavid\LaravelBancardQR\Facades\BancardQR;
+
+$response = BancardQR::generateQr(50000, 'Payment description');
+$response = BancardQR::revert($hookAlias);
+```
+
+### Using dependency injection
+
+```php
+use KrugerDavid\LaravelBancardQR\BancardQRManager;
+
+class PaymentController
+{
+    public function __construct(
+        private BancardQRManager $bancardQR
+    ) {}
+
+    public function create()
+    {
+        $response = $this->bancardQR->generateQr(50000, 'Payment');
+    }
+}
+```
+
+### API estática legacy (retrocompatible)
+
 ```php
 use KrugerDavid\LaravelBancardQR\BancardQR;
 
-$response = BancardQR::generate_qr(int $amount, string $description, ?array $promotions);
+$response = BancardQR::generate_qr(50000, 'Descripción', $promotions);
+BancardQR::revert($hook_alias);
 ```
 
-The response object will have the following structure
+> **Nota**: Se recomienda migrar al Facade o inyección de dependencias.
+
+---
+
+## Respuestas de la API
+
+### Generate QR — estructura de respuesta
 
 | Parameter | Type | Description |
 | --- | --- | --- |
@@ -74,15 +121,7 @@ The response object will have the following structure
 | `name` | String | Client name. |
 | `logo_url` | String | Client logo url |
 
-### Revert QR Payment
-Revert a QR code after a payment was made
-```php
-use KrugerDavid\LaravelBancardQR\BancardQR;
-
-// $hook_alias is the QR alias
-BancardQR::revert($hook_alias);
-```
-The response object will have the following structure
+### Revert — estructura de respuesta
 
 | Parameter | Type | Description |
 | --- | --- | --- |

@@ -1,6 +1,7 @@
 {
     "name": "krugerdavid/laravel-bancard-qr",
     "description": "Laravel wrapper package for the Bancard QR API",
+    "type": "library",
     "license": "MIT",
     "keywords": [
         "krugerdavid",
@@ -15,25 +16,44 @@
             "name": "David Kruger",
             "email": "me@krugerdavid.com",
             "homepage": "https://krugerdavid.com",
-            "role": "Developer"
+            "role": "Fullstack Engineer"
         }
     ],
     "require": {
-        "php": "^8.0",
-        "guzzlehttp/guzzle": "^7.5"
+        "php": "^8.1",
+        "illuminate/support": "^10.0|^11.0",
+        "guzzlehttp/guzzle": "^7.0"
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
+    "require-dev": {
+        "pestphp/pest": "^2.0",
+        "pestphp/pest-plugin-laravel": "^2.0",
+        "orchestra/testbench": "^8.0|^9.0"
+    },
     "autoload": {
         "psr-4": {
             "KrugerDavid\\LaravelBancardQR\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "KrugerDavid\\LaravelBancardQR\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
                 "KrugerDavid\\LaravelBancardQR\\BancardQRServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "BancardQR": "KrugerDavid\\LaravelBancardQR\\Facades\\BancardQR"
+            }
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
         }
     }
 }
