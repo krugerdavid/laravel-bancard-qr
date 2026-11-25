@@ -1,59 +1,49 @@
 # Bancard QR for Laravel
-[![Latest Stable Version](http://poser.pugx.org/krugerdavid/laravel-bancard-qr/v)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
-[![Daily Downloads](http://poser.pugx.org/krugerdavid/laravel-bancard-qr/d/daily)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
-[![Monthly Downloads](http://poser.pugx.org/krugerdavid/laravel-bancard-qr/d/monthly)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
-[![Total Downloads](http://poser.pugx.org/krugerdavid/laravel-bancard-qr/downloads)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
-[![License](http://poser.pugx.org/krugerdavid/laravel-bancard-qr/license)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
-[![PHP Version Require](http://poser.pugx.org/krugerdavid/laravel-bancard-qr/require/php)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
 
-Laravel wrapper package for Bancard QR API. More information about Bancard QR [here](https://www.bancard.com.py/pagos-qr)
+[![Latest Version](https://img.shields.io/packagist/v/krugerdavid/laravel-bancard-qr.svg?style=flat-square)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
+[![Total Downloads](https://img.shields.io/packagist/dt/krugerdavid/laravel-bancard-qr.svg?style=flat-square)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
+[![License](https://img.shields.io/packagist/l/krugerdavid/laravel-bancard-qr.svg?style=flat-square)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
+[![PHP Version](https://img.shields.io/packagist/php-v/krugerdavid/laravel-bancard-qr.svg?style=flat-square)](https://packagist.org/packages/krugerdavid/laravel-bancard-qr)
 
-## What's new in v2.0
+Laravel wrapper for Bancard QR API. Más información sobre Bancard QR [aquí](https://www.bancard.com.py/pagos-qr).
 
-- **Manager + Facade**: Inyectable `BancardQRManager` y Facade para mejor testabilidad
-- **Dependency injection**: Soporte nativo para inyección de dependencias
-- **Config mejorada**: `mergeConfigFrom` — la config funciona sin publicar; timeout configurable
-- **Manejo de errores**: Excepciones en lugar de retornar JSON; logging con `Log::error`
-- **Tests**: Suite completa con Pest (Unit + Feature)
-- **CI**: GitHub Actions para PHP 8.2–8.4 y Laravel 11–12
-- **Bugs corregidos**: `revert()` usaba keys de config incorrectos; `formatException` fallaba sin response
+## Why this package exists
+
+Bancard QR permite cobros escaneando un código QR desde la app del banco. Este paquete encapsula la API de generación de QR y reversa en una interfaz Laravel: Facade, Manager inyectable, config publicable y manejo de errores con excepciones. Evita duplicar lógica de autenticación Basic Auth y URLs de staging/producción.
 
 ## Requirements
 
-* PHP 8.1 or later
-* Laravel 10, 11 or later
+* PHP 8.1+
+* Laravel 10, 11 o 12
 
 ## Installation
 
-Fire up Composer and require this package in your project.
 ```bash
 composer require krugerdavid/laravel-bancard-qr
 ```
-That's it.
 
-## Publish the config
+## Configuration
 
-Run the following command to publish config file,
+Publicar la config:
 
 ```bash
 php artisan vendor:publish --tag=bancardqr-config
 ```
 
-## Add ENV keys
+Variables de entorno (.env):
 
-Add the following keys on your .env file
 ```
 BANCARDQR_PUBLIC_KEY=
 BANCARDQR_PRIVATE_KEY=
-BANCARDQR_STAGING=
+BANCARDQR_STAGING=true
 BANCARDQR_COMMERCE_CODE=
 BANCARDQR_COMMERCE_BRANCH=
 BANCARDQR_TIMEOUT=30
 ```
 
-## How to use
+## Usage
 
-### Using the Facade (recommended)
+### Usando el Facade (recomendado)
 
 ```php
 use KrugerDavid\LaravelBancardQR\Facades\BancardQR;
@@ -62,7 +52,7 @@ $response = BancardQR::generateQr(50000, 'Payment description');
 $response = BancardQR::revert($hookAlias);
 ```
 
-### Using dependency injection
+### Usando inyección de dependencias
 
 ```php
 use KrugerDavid\LaravelBancardQR\BancardQRManager;
@@ -90,8 +80,6 @@ BancardQR::revert($hook_alias);
 ```
 
 > **Nota**: Se recomienda migrar al Facade o inyección de dependencias.
-
----
 
 ## Respuestas de la API
 
@@ -129,10 +117,19 @@ BancardQR::revert($hook_alias);
 | `reverse` | QR object | Element with info of the QR reverted |
 | `messages` | Array | In case of `status` error, list of errors |
 
+## Related packages
+
+- [laravel-bancard](https://github.com/krugerdavid/laravel-bancard) — Bancard VPOS (tarjetas de crédito/débito)
+- [laravel-pagopar](https://github.com/krugerdavid/laravel-pagopar) — Pagopar (transferencias, billeteras, múltiples medios)
+
+## Used in Paraguay / production-ready
+
+Este paquete está en uso en producción en comercios de Paraguay. Bancard QR es una opción popular para pagos presenciales o desde móvil escaneando el código.
+
 ## Credits
 
 - [David Krüger](https://github.com/krugerdavid)
 
 ## License
 
-The MIT License (MIT). Please see [License](LICENSE.md) File for more information  
+MIT
