@@ -17,13 +17,14 @@ class BancardQRManager
     protected string $commerceBranch;
 
     public const PRODUCTION_URL = 'https://comercios.bancard.com.py/external-commerce/api/0.1/';
-    public const STAGING_URL = 'https://vpos.infonet.com.py:8888/';
+    public const STAGING_URL = 'https://desa.infonet.com.py:8035/external-commerce/api/0.1/';
 
     public function __construct(array $config)
     {
-        $this->baseUrl = $config['staging'] ?? true
+        $defaultUrl = ($config['staging'] ?? true)
             ? rtrim(self::STAGING_URL, '/') . '/'
             : rtrim(self::PRODUCTION_URL, '/') . '/';
+        $this->baseUrl = ! empty($config['url']) ? rtrim($config['url'], '/') . '/' : $defaultUrl;
 
         $this->privateKey = $config['private_key'];
         $this->publicKey = $config['public_key'];

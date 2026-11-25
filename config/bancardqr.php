@@ -15,6 +15,9 @@ return [
     */
     'staging' => (bool) env('BANCARDQR_STAGING', true),
 
+    // Override base URL (optional). Si está vacío, usa STAGING_URL o PRODUCTION_URL según staging.
+    'url' => env('BANCARDQR_URL', null),
+
     /*
     |--------------------------------------------------------------------------
     | Commerce Info

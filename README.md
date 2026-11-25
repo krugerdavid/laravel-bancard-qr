@@ -13,8 +13,8 @@ Bancard QR permite cobros escaneando un código QR desde la app del banco. Este 
 
 ## Requirements
 
-* PHP 8.1+
-* Laravel 10, 11 o 12
+* PHP 8.1+ (Laravel 12 requiere 8.2+, Laravel 13 requiere 8.3+)
+* Laravel 10, 11, 12 o 13 (CI prueba 11, 12 y 13)
 
 ## Installation
 
@@ -39,6 +39,8 @@ BANCARDQR_STAGING=true
 BANCARDQR_COMMERCE_CODE=
 BANCARDQR_COMMERCE_BRANCH=
 BANCARDQR_TIMEOUT=30
+# Opcional: sobrescribe la URL base (si no, usa staging o producción según BANCARDQR_STAGING)
+BANCARDQR_URL=
 ```
 
 ## Usage

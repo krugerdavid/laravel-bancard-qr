@@ -12,11 +12,14 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        php: [8.2, 8.3, 8.4]
-        laravel: [11.*, 12.*]
-        stability: [prefer-stable]
+        include:
+          - { php: '8.2', laravel: '11.*', testbench: '9.*' }
+          - { php: '8.2', laravel: '12.*', testbench: '10.*' }
+          - { php: '8.3', laravel: '12.*', testbench: '10.*' }
+          - { php: '8.3', laravel: '13.*', testbench: '11.*' }
+          - { php: '8.4', laravel: '13.*', testbench: '11.*' }
 
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }}
+    name: P${{ matrix.php }} - L${{ matrix.laravel }}
 
     steps:
       - name: Checkout code
@@ -30,8 +33,12 @@ jobs:
           coverage: none
 
       - name: Install dependencies
+        env:
+          # Laravel 11 (EOL) tiene avisos de seguridad que bloquean la resolución; solo para probar compatibilidad.
+          COMPOSER_NO_SECURITY_BLOCKING: 1
         run: |
-          composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update --dev
+          composer update --prefer-stable --prefer-dist --no-interaction
 
       - name: Execute tests
         run: vendor/bin/pest

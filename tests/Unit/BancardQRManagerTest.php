@@ -94,3 +94,46 @@ it('throws on API error for generateQr', function () {
 
     expect(fn () => $manager->generateQr(0, 'Test'))->toThrow(Exception::class, 'Bancard QR API error');
 });
+
+function bancardQrBaseUrl(BancardQRManager $manager): string
+{
+    $prop = (new ReflectionObject($manager))->getProperty('baseUrl');
+    $prop->setAccessible(true);
+
+    return $prop->getValue($manager);
+}
+
+it('uses the staging url with the external-commerce path by default', function () {
+    $manager = new BancardQRManager($this->config);
+
+    expect(bancardQrBaseUrl($manager))->toEndWith('/external-commerce/api/0.1/');
+});
+
+it('uses the production url when staging is false', function () {
+    $manager = new BancardQRManager(array_merge($this->config, ['staging' => false]));
+
+    expect(bancardQrBaseUrl($manager))->toBe('https://comercios.bancard.com.py/external-commerce/api/0.1/');
+});
+
+it('lets the url config override the base url', function () {
+    $manager = new BancardQRManager(array_merge($this->config, ['url' => 'https://mi-proxy.test/qr']));
+
+    expect(bancardQrBaseUrl($manager))->toBe('https://mi-proxy.test/qr/');
+});
+
+it('sends amount as a number, not a string (doc: Number)', function () {
+    $history = [];
+    $mock = new MockHandler([new Response(200, [], json_encode(['status' => 'success', 'qr_express' => ['amount' => 12345, 'hook_alias' => 'X', 'url' => 'u']]))]);
+    $stack = HandlerStack::create($mock);
+    $stack->push(\GuzzleHttp\Middleware::history($history));
+
+    $manager = new BancardQRManager($this->config);
+    $prop = (new ReflectionObject($manager))->getProperty('client');
+    $prop->setAccessible(true);
+    $prop->setValue($manager, new Client(['handler' => $stack, 'base_uri' => 'https://x.test/']));
+
+    $manager->generateQr(12345, 'Venta');
+
+    $sent = json_decode((string) $history[0]['request']->getBody(), true);
+    expect($sent['amount'])->toBe(12345);
+});
